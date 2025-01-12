@@ -1,4 +1,8 @@
 /** @type {import('tailwindcss').Config} */
+import typography from '@tailwindcss/typography';
+import aspectRatio from '@tailwindcss/aspect-ratio';
+import lineClamp from '@tailwindcss/line-clamp';
+
 export default {
   content: [
     "./index.html",          // Include your index.html
@@ -8,9 +12,9 @@ export default {
     extend: {},
   },
   plugins: [
-    require('@tailwindcss/typography'),
-    require('@tailwindcss/aspect-ratio'),
-    require('@tailwindcss/line-clamp'),
+    typography,
+    aspectRatio,
+    lineClamp,
   ],
-}
+};
 
