@@ -1,3 +1,4 @@
+import { API_URL } from '../../config/config';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Users, FileText, Plus, Settings, LogOut } from 'lucide-react';
@@ -48,6 +49,17 @@ export default function AdminDashboard() {
             bgColor: 'bg-gray-700'
         }
     ];
+
+    const fetchUsers = async () => {
+        try {
+            const response = await fetch(`${API_URL}/api/admin/users`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            // ...
+        } catch (error) {
+            // ...
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gray-900">

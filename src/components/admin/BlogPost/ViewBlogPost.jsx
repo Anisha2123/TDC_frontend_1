@@ -4,6 +4,7 @@ import { ArrowLeft, Edit } from 'lucide-react';
 import AdminLayout from '../layout/AdminLayout';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.bubble.css';
+import { API_URL } from '../../../config/config';
 
 export default function ViewBlogPost() {
   const { postId } = useParams();
@@ -18,7 +19,7 @@ export default function ViewBlogPost() {
 
   const fetchPost = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/blog-posts/${postId}`, {
+      const response = await fetch(`${API_URL}/api/blog-posts/${postId}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }

@@ -1,3 +1,4 @@
+import { API_URL } from '../../../config/config';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Image, Code, Type, Video, X, ArrowLeft, Edit2, Check } from 'lucide-react';
@@ -68,7 +69,7 @@ function CreateBlogPost() {
       }
 
       console.log('Sending request with token:', token);
-      const response = await fetch('http://localhost:3000/api/admin/blog-posts', {
+      const response = await fetch(`${API_URL}/api/admin/blog-posts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

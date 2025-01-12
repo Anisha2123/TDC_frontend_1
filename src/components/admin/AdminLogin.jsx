@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { LogIn, Eye, EyeOff } from 'lucide-react';
+import { API_URL } from '../../config/config';
 
 const AdminLogin = () => {
   const [formData, setFormData] = useState({
@@ -24,7 +25,7 @@ const AdminLogin = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:3000/api/admin/login', formData);
+      const response = await axios.post(`${API_URL}/api/admin/login`, formData);
       if (response.data.success) {
         const { token, admin } = response.data;
         setAuthState({

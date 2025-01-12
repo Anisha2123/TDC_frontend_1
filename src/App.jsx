@@ -5,6 +5,7 @@ import AdminLogin from './components/admin/AdminLogin';
 import AppContent from './AppContent';
 import BlogList from './Pages/BlogList';
 import BlogDetail from './Pages/BlogDetail';
+import { API_URL } from './config/config';
 
 function App() {
     return (
@@ -12,7 +13,7 @@ function App() {
             <BrowserRouter>
                 <Routes>
                     {/* Public Routes */}
-                    <Route path="/admin/login" element={<AdminLogin />} />
+                    {/* The API_URL is handled within AdminLogin.jsx */}
                     
                     {/* Admin Routes */}
                     <Route path="/admin/*" element={<AdminRoute />} />

@@ -1,3 +1,5 @@
+import React, { useEffect } from 'react';
+import { API_URL } from '../config/config';
 import { motion } from 'framer-motion';
 import { Star, Award, Briefcase } from 'lucide-react';
 
@@ -28,6 +30,16 @@ export default function StudentSuccess() {
       rating: 5
     }
   ];
+
+  useEffect(() => {
+    fetch(`${API_URL}/student/success`, {
+      method: 'GET',
+    })
+    .then(response => response.json())
+    .then(data => {
+      // ...
+    });
+  }, []);
 
   return (
     <section className="py-20 bg-gray-50">

@@ -1,14 +1,7 @@
-import { createContext, useContext, useState } from 'react';
+import { API_URL } from '../config/config';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
-
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error('useAuth must be used within an AuthProvider');
-    }
-    return context;
-};
 
 export const AuthProvider = ({ children }) => {
     const [authState, setAuthState] = useState({
@@ -18,40 +11,38 @@ export const AuthProvider = ({ children }) => {
         token: null,
     });
 
-    const value = {
-        authState,
-        setAuthState,
-    };
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            // Optionally verify token by making an API call
+            fetch(`${API_URL}/api/verify-token`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        setAuthState({
+                            isAuthenticated: true,
+                            isAdmin: data.user.isAdmin,
+                            user: data.user,
+                            token: token
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error('Token verification failed:', err);
+                    localStorage.removeItem('token');
+                });
+        }
+    }, []);
 
     return (
-        <AuthContext.Provider value={value}>
+        <AuthContext.Provider value={{ authState, setAuthState }}>
             {children}
         </AuthContext.Provider>
     );
 };
 
-const logout = async () => {
-    try {
-        const token = localStorage.getItem('token');
-        if (token) {
-            // Call the logout endpoint
-            await fetch('http://localhost:3000/api/logout', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-        }
-        
-        // Clear local storage and state
-        localStorage.removeItem('token');
-        setAuthState({
-            isAuthenticated: false,
-            user: null,
-            token: null
-        });
-    } catch (error) {
-        console.error('Logout error:', error);
-    }
-}; 
+export const useAuth = () => useContext(AuthContext); 

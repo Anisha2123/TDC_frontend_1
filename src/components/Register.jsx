@@ -5,6 +5,7 @@ import { Eye, EyeOff, UserPlus, ArrowRight, Mail, Lock, User, Phone, Check } fro
 import { GoogleLogin } from '@react-oauth/google';
 import { FaFacebook } from 'react-icons/fa';
 import { jwtDecode } from "jwt-decode";
+import { API_URL } from '../config/config';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -67,7 +68,7 @@ export default function Register() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:3000/api/send-otp', {
+      const response = await fetch(`${API_URL}/api/send-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +104,7 @@ export default function Register() {
           otp
         );
       } else {
-        const response = await fetch('http://localhost:3000/api/verify-otp', {
+        const response = await fetch(`${API_URL}/api/verify-otp`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -141,7 +142,7 @@ export default function Register() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:3000/api/register', {
+      const response = await fetch(`${API_URL}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -237,7 +238,7 @@ export default function Register() {
         throw new Error('Temporary user data not found');
       }
 
-      const response = await fetch('http://localhost:3000/api/auth/google/complete-signup', {
+      const response = await fetch(`${API_URL}/api/auth/google/complete-signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,3 +1,4 @@
+import { API_URL } from './config/config';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import './App.css'
 import Navbar from './components/Navbar'

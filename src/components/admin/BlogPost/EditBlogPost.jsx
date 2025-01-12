@@ -4,6 +4,7 @@ import { ArrowLeft, Save, Trash2 } from 'lucide-react';
 import AdminLayout from '../layout/AdminLayout';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { API_URL } from '../../../config/config';
 
 export default function EditBlogPost() {
   const { postId } = useParams();
@@ -20,7 +21,7 @@ export default function EditBlogPost() {
 
   const fetchPost = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/blog-posts/${postId}`, {
+      const response = await fetch(`${API_URL}/api/blog-posts/${postId}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -59,7 +60,7 @@ export default function EditBlogPost() {
         throw new Error('Section not found');
       }
 
-      const response = await fetch(`http://localhost:3000/api/blog-posts/${postId}/sections/${sectionId}`, {
+      const response = await fetch(`${API_URL}/api/blog-posts/${postId}/sections/${sectionId}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`,
@@ -130,7 +131,7 @@ export default function EditBlogPost() {
 
     try {
         // Remove 'admin' from the URL path to match server route
-        const response = await fetch(`http://localhost:3000/api/blog-posts/${postId}/sections/${sectionId}`, {
+        const response = await fetch(`${API_URL}/api/blog-posts/${postId}/sections/${sectionId}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('adminToken')}`

@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import jwtDecode from 'jwt-decode';
+import { API_URL } from '../config/config';
 
 export default function Signup() {
   const [error, setError] = useState('');
@@ -15,7 +16,7 @@ export default function Signup() {
       const decoded = jwtDecode(credentialResponse.credential);
       setGoogleData(decoded);
 
-      const res = await fetch('http://localhost:3000/api/auth/google/signup', {
+      const res = await fetch(`${API_URL}/api/auth/google/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -46,7 +47,7 @@ export default function Signup() {
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:3000/api/auth/google/verify-otp', {
+      const res = await fetch(`${API_URL}/api/auth/google/verify-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

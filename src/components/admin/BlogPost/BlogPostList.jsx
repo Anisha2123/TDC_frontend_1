@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Edit, Trash2, Eye, Plus } from 'lucide-react';
 import AdminLayout from '../layout/AdminLayout';
+import { API_URL } from '../../../config/config';
 
 export default function BlogPostList() {
   const [posts, setPosts] = useState([]);
@@ -15,9 +16,9 @@ export default function BlogPostList() {
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/blog-posts', {
+      const response = await fetch(`${API_URL}/api/admin/blog-posts`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+          'Authorization': `Bearer ${token}`
         }
       });
       const data = await response.json();
@@ -36,10 +37,10 @@ export default function BlogPostList() {
     if (!window.confirm('Are you sure you want to delete this blog post?')) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/api/blog-posts/${postId}`, {
+      const response = await fetch(`${API_URL}/api/blog-posts/${postId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+          'Authorization': `Bearer ${token}`
         }
       });
 

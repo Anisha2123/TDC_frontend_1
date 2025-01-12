@@ -1,3 +1,4 @@
+import { API_URL } from '../../config/config';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
@@ -15,7 +16,7 @@ export default function AdminPanel() {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:3000/api/admin/users', {
+      const response = await axios.get(`${API_URL}/api/admin/users`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.data.success) {
@@ -99,7 +100,7 @@ export default function AdminPanel() {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.delete(
-        `http://localhost:3000/api/users/${userToDelete._id}`,
+        `${API_URL}/api/users/${userToDelete._id}`,
         {
           headers: { Authorization: `Bearer ${token}` }
         }
@@ -121,7 +122,7 @@ export default function AdminPanel() {
     const fetchLogs = async () => {
       try {
         const token = localStorage.getItem('adminToken');
-        const response = await fetch('http://localhost:3000/api/logs/all', {
+        const response = await fetch(`${API_URL}/api/logs/all`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }

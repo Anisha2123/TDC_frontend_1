@@ -6,6 +6,7 @@ import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
+import { API_URL } from '../config/config';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -47,9 +48,9 @@ export default function Login() {
 
   const handleGoogleResponse = async (response) => {
     try {
-      console.log('Sending credential to backend:', response.credential); // Debug log
+      console.log('Sending credential to backend:', response.credential);
       
-      const res = await fetch('http://localhost:3000/api/auth/google', {
+      const res = await fetch(`${API_URL}/api/auth/google`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -159,7 +160,7 @@ export default function Login() {
     setError('');
 
     try {
-        const response = await fetch('http://localhost:3000/api/login', {
+        const response = await fetch(`${API_URL}/api/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -181,7 +182,7 @@ export default function Login() {
             localStorage.setItem('user', JSON.stringify(userData));
 
             // Verify admin status immediately after login
-            const verifyResponse = await fetch('http://localhost:3000/api/admin/verify', {
+            const verifyResponse = await fetch(`${API_URL}/api/admin/verify`, {
                 headers: {
                     'Authorization': `Bearer ${data.token}`
                 }
