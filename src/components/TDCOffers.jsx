@@ -1,6 +1,7 @@
 import { Book, Tv, Gamepad2, Building2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 const offerItems = [
   {
@@ -33,7 +34,69 @@ const offerItems = [
   }
 ];
 
+const styles = {
+  hamburgerMenu: {
+    display: 'none',
+    cursor: 'pointer',
+    padding: '10px',
+    zIndex: 100,
+  },
+
+  navLinks: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '20px',
+  },
+
+  '@media screen and (max-width: 768px)': {
+    navbar: {
+      padding: '1rem',
+    },
+    
+    hamburgerMenu: {
+      display: 'block',
+      position: 'absolute',
+      right: '20px',
+      top: '20px',
+    },
+    
+    navLinks: {
+      display: 'none',
+      flexDirection: 'column',
+      position: 'absolute',
+      top: '60px',
+      right: '0',
+      backgroundColor: '#fff',
+      width: '200px',
+      padding: '20px',
+      boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+      borderRadius: '4px',
+    },
+    
+    navLinksActive: {
+      display: 'flex',
+    }
+  },
+
+  '@media screen and (max-width: 480px)': {
+    navbar: {
+      padding: '0.5rem',
+    },
+    
+    navLinks: {
+      width: '100%',
+      top: '50px',
+    }
+  }
+};
+
 export default function TDCOffers() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
     <section className="py-20 bg-[#fcfcf8]">
       <div className="max-w-7xl mx-auto px-6">

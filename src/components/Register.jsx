@@ -4,6 +4,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Eye, EyeOff, UserPlus, ArrowRight, Mail, Lock, User, Phone, Check } from 'lucide-react';
 import { GoogleLogin } from '@react-oauth/google';
 import { FaFacebook } from 'react-icons/fa';
+import { jwtDecode } from "jwt-decode";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -22,6 +23,9 @@ export default function Register() {
     password: ''
   });
   const [googleUserData, setGoogleUserData] = useState(null);
+  const [showVerificationPopup, setShowVerificationPopup] = useState(false);
+  const [tempUserData, setTempUserData] = useState(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -148,7 +152,11 @@ export default function Register() {
       const data = await response.json();
 
       if (data.success) {
-        navigate('/login');
+        setShowSuccessModal(true);
+        setTimeout(() => {
+          setShowSuccessModal(false);
+          navigate('/login');
+        }, 2000);
       } else {
         setError(data.message || 'Registration failed');
       }
@@ -161,48 +169,64 @@ export default function Register() {
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      console.log('Google response:', credentialResponse);
+      console.log('Credential Response:', credentialResponse);
+      
+      // Show verification popup immediately after Google response
+      setShowVerificationPopup(true);
+      setTempUserData(credentialResponse);
 
-      if (!credentialResponse?.credential) {
-        throw new Error('No credential received from Google');
-      }
+      // Don't make the API call yet - wait for user confirmation in handleVerificationConfirm
+    } catch (error) {
+      console.error('Google login error:', error);
+      setError('Failed to process Google login: ' + error.message);
+    }
+  };
 
-      const backendResponse = await fetch('http://localhost:3000/api/auth/google/signup', {
+  const handleVerificationConfirm = async () => {
+    try {
+      setShowVerificationPopup(false);
+      
+      // Determine which API endpoint to call based on login type
+      const endpoint = tempUserData.type === 'facebook' 
+        ? 'http://localhost:3000/api/auth/facebook/signup'
+        : 'http://localhost:3000/api/auth/google/signup';
+
+      const payload = tempUserData.type === 'facebook'
+        ? { accessToken: tempUserData.accessToken }
+        : { credential: tempUserData.credential };
+
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
-          credential: credentialResponse.credential
-        }),
+        body: JSON.stringify(payload)
       });
 
-      if (!backendResponse.ok) {
-        const errorData = await backendResponse.json();
-        throw new Error(errorData.message || 'Failed to authenticate with Google');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await backendResponse.json();
-      console.log('Backend response:', data);
-
+      const data = await response.json();
+      
       if (data.success && data.tempUser) {
         // Store user data in sessionStorage
         sessionStorage.setItem('tempUser', JSON.stringify(data.tempUser));
         
-        setGoogleUserData(data.tempUser);
+        setGoogleUserData(data.tempUser); // We can use the same state for both
         setFormData(prev => ({
           ...prev,
           firstName: data.tempUser.firstName || '',
           lastName: data.tempUser.lastName || '',
           email: data.tempUser.email,
         }));
-        setStep(1);
+        setStep(1); // Move to phone number input step
       } else {
-        throw new Error('Invalid response from server');
+        setError(data.message || 'Login failed');
       }
     } catch (error) {
-      console.error('Google auth error:', error);
-      setError(error.message || 'Failed to authenticate with Google');
+      console.error('Error:', error);
+      setError('Failed to process login: ' + error.message);
     }
   };
 
@@ -296,39 +320,13 @@ export default function Register() {
         }, { scope: 'email,public_profile' });
       });
 
-      const res = await fetch('http://localhost:3000/api/auth/facebook', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          accessToken: response.authResponse.accessToken 
-        })
+      // Show verification popup immediately after Facebook response
+      setShowVerificationPopup(true);
+      setTempUserData({
+        type: 'facebook',
+        accessToken: response.authResponse.accessToken
       });
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'Failed to authenticate with Facebook');
-      }
-
-      const data = await res.json();
-      console.log('Backend response:', data);
-
-      if (data.success && data.tempUser) {
-        // Store user data in sessionStorage
-        sessionStorage.setItem('tempUser', JSON.stringify(data.tempUser));
-        
-        setGoogleUserData(data.tempUser); // We can reuse the Google data state
-        setFormData(prev => ({
-          ...prev,
-          firstName: data.tempUser.firstName || '',
-          lastName: data.tempUser.lastName || '',
-          email: data.tempUser.email,
-        }));
-        setStep(1); // Move to phone verification step
-      } else {
-        throw new Error('Invalid response from server');
-      }
     } catch (error) {
       console.error('Facebook login error:', error);
       setError(error.message || 'Failed to authenticate with Facebook');
@@ -575,6 +573,96 @@ export default function Register() {
           </Link>
         </div>
       </motion.div>
+
+      {/* Verification Popup */}
+      <AnimatePresence>
+        {showVerificationPopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-xl p-6 max-w-md mx-4 shadow-xl"
+            >
+              <div className="text-center mb-4">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg 
+                    className="w-8 h-8 text-[#333333]" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" 
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900">
+                  Phone Verification Required
+                </h3>
+              </div>
+              
+              <p className="text-gray-600 mb-6 text-center">
+                To complete your registration and secure your account, we need to verify your phone number. This is a one-time process.
+              </p>
+
+              <div className="flex justify-center space-x-4">
+                <button
+                  onClick={() => setShowVerificationPopup(false)}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleVerificationConfirm}
+                  className="px-6 py-2 bg-[#333333] text-white rounded-lg hover:bg-gray-800 transition-colors"
+                >
+                  Continue
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Success Modal */}
+      <AnimatePresence>
+        {showSuccessModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          >
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.5, opacity: 0 }}
+              className="bg-white rounded-lg p-8 flex flex-col items-center max-w-sm mx-4"
+            >
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                <Check className="w-8 h-8 text-green-500" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                Welcome Aboard!
+              </h3>
+              <p className="text-gray-600 text-center mb-4">
+                Your account has been created successfully. Redirecting to login...
+              </p>
+              <div className="w-8 h-8 border-t-2 border-b-2 border-green-500 rounded-full animate-spin">
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

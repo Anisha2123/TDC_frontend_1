@@ -3,16 +3,29 @@ import { Link, useNavigate } from 'react-router-dom';
 import { checkTokenExpiration } from '../utils/auth';
 import './styles.css';
 import { FaUserCircle } from 'react-icons/fa';
+import { useState } from 'react';
 
 const NavItem = ({ title, items }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <div className="relative group">
-      <div className="flex items-center gap-1 px-4 py-2 text-white hover:text-gray-200">
-        {title}
-        {items && <ChevronDown className="w-4 h-4 text-white" />}
+    <div className="relative group w-full lg:w-auto">
+      <div 
+        className="flex items-center justify-between px-4 py-2 text-white hover:text-gray-200 cursor-pointer"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span>{title}</span>
+        {items && (
+          <ChevronDown className={`w-4 h-4 text-white transition-transform duration-200 lg:group-hover:rotate-180 ${isOpen ? 'rotate-180' : ''}`} />
+        )}
       </div>
       {items && (
-        <div className="absolute left-0 hidden w-48 py-2 bg-[#383838] rounded-md shadow-lg group-hover:block">
+        <div className={`
+          lg:absolute lg:left-0 lg:w-48 lg:py-2 lg:bg-[#383838] lg:rounded-md lg:shadow-lg
+          lg:group-hover:block
+          ${isOpen ? 'block' : 'hidden'}
+          w-full bg-[#404040] lg:bg-[#383838]
+        `}>
           {items.map((item, index) => (
             <Link
               key={index}
@@ -32,6 +45,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
   const isValidSession = checkTokenExpiration();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -89,13 +103,50 @@ export default function Navbar() {
             className="h-10 brightness-110 rounded-lg"
           />
         </Link>
-        <div className="flex items-center space-x-2">
+
+        {/* Hamburger Menu Button - Only visible on mobile */}
+        <button
+          className="lg:hidden text-white p-2"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          {!isMobileMenuOpen ? (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          ) : (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          )}
+        </button>
+
+        {/* Navigation Items */}
+        <div className={`
+          flex items-center space-x-2
+          lg:relative lg:flex lg:flex-row
+          absolute top-full left-0 right-0
+          bg-[#333333] 
+          transition-all duration-300 ease-in-out
+          ${isMobileMenuOpen ? 'flex flex-col items-start p-4' : 'hidden lg:flex'}
+          lg:bg-transparent lg:p-0
+          ${isMobileMenuOpen ? 'border-t border-gray-600' : ''}
+        `}>
           {navItems.map((item, index) => (
-            <NavItem key={index} {...item} />
+            <div key={index} className="w-full lg:w-auto">
+              <NavItem {...item} />
+            </div>
           ))}
         </div>
 
-        <div className="btn-ls flex items-center gap-4">
+        {/* Auth Buttons */}
+        <div className={`
+          btn-ls flex items-center gap-4
+          lg:relative lg:flex
+          ${isMobileMenuOpen ? 'absolute top-full left-0 right-0 p-4 bg-[#333333] border-t border-gray-600' : 'relative'}
+          ${isMobileMenuOpen ? 'flex-col items-start' : 'flex-row items-center'}
+          lg:flex-row lg:bg-transparent lg:p-0 lg:border-0
+        `}>
           {isValidSession && user ? (
             <>
               <span className="text-sm font-medium text-white">
