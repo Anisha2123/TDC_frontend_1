@@ -34,7 +34,7 @@ export const checkTokenExpiration = () => {
 const refreshToken = async () => {
   try {
     const token = localStorage.getItem('token');
-    const response = await fetch('http://localhost:3000/api/refresh-token', {
+    const response = await fetch('https://tdc-backend-1.vercel.app/api/refresh-token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

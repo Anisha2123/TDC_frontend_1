@@ -96,7 +96,7 @@ export default function EditBlogPost() {
 
   const handleTitleUpdate = async (newTitle) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/blog-posts/${postId}`, {
+      const response = await fetch(`https://tdc-backend-1.vercel.app/api/admin/blog-posts/${postId}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`,

@@ -43,7 +43,7 @@ export default function ProfileSetup() {
       }
 
       // Fetch user data
-      const userResponse = await fetch('http://localhost:3000/api/user-profile', {
+      const userResponse = await fetch('https://tdc-backend-1.vercel.app/api/user-profile', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -60,7 +60,7 @@ export default function ProfileSetup() {
       }
 
       // Fetch profile data
-      const profileResponse = await fetch('http://localhost:3000/api/profile', {
+      const profileResponse = await fetch('https://tdc-backend-1.vercel.app/api/profile', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -93,7 +93,7 @@ export default function ProfileSetup() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3000/api/profile', {
+      const response = await fetch('https://tdc-backend-1.vercel.app/api/profile', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

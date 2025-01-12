@@ -20,7 +20,7 @@ export default function UserDetail() {
     try {
       const adminToken = localStorage.getItem('adminToken');
       const response = await axios.get(
-        `http://localhost:3000/api/admin/users/${userId}`,
+        `https://tdc-backend-1.vercel.app/api/admin/users/${userId}`,
         {
           headers: { Authorization: `Bearer ${adminToken}` }
         }
@@ -51,7 +51,7 @@ export default function UserDetail() {
     try {
       const adminToken = localStorage.getItem('adminToken');
       const response = await axios.put(
-        `http://localhost:3000/api/admin/users/${userId}`,
+        `https://tdc-backend-1.vercel.app/api/admin/users/${userId}`,
         { [field]: editValues[field] },
         {
           headers: { Authorization: `Bearer ${adminToken}` }

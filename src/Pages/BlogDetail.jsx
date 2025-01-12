@@ -17,7 +17,7 @@ export default function BlogDetail() {
 
   const fetchBlogDetail = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/blog-posts/${id}`);
+      const response = await fetch(`https://tdc-backend-1.vercel.app/api/blog-posts/${id}`);
       const data = await response.json();
       if (data.success) {
         setBlog(data.post);

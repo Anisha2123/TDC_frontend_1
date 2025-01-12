@@ -124,7 +124,7 @@ export default function Login() {
       const userData = await userDataResponse.json();
 
       // Send to backend for authentication
-      const res = await fetch('http://localhost:3000/api/auth/facebook/login', {
+      const res = await fetch('https://tdc-backend-1.vercel.app/api/auth/facebook/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

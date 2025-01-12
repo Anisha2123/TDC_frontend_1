@@ -189,8 +189,8 @@ export default function Register() {
       
       // Determine which API endpoint to call based on login type
       const endpoint = tempUserData.type === 'facebook' 
-        ? 'http://localhost:3000/api/auth/facebook/signup'
-        : 'http://localhost:3000/api/auth/google/signup';
+        ? 'https://tdc-backend-1.vercel.app/api/auth/facebook/signup'
+        : 'https://tdc-backend-1.vercel.app/api/auth/google/signup';
 
       const payload = tempUserData.type === 'facebook'
         ? { accessToken: tempUserData.accessToken }
@@ -284,7 +284,7 @@ export default function Register() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:3000/api/send-otp', {
+      const response = await fetch('https://tdc-backend-1.vercel.app/api/send-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -23,7 +23,7 @@ export default function ForgotPassword() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:3000/api/forgot-password/send-otp', {
+      const response = await fetch('https://tdc-backend-1.vercel.app/api/forgot-password/send-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export default function ForgotPassword() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:3000/api/forgot-password/verify-otp', {
+      const response = await fetch('https://tdc-backend-1.vercel.app/api/forgot-password/verify-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ export default function ForgotPassword() {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/api/forgot-password/reset', {
+      const response = await fetch('https://tdc-backend-1.vercel.app/api/forgot-password/reset', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

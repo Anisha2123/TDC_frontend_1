@@ -20,7 +20,7 @@ export default function AdminRoute() {
         const token = localStorage.getItem('adminToken');
         if (token) {
           // Verify token with backend
-          const response = await fetch('http://localhost:3000/api/admin/verify', {
+          const response = await fetch('https://tdc-backend-1.vercel.app/api/admin/verify', {
             headers: {
               'Authorization': `Bearer ${token}`
             }

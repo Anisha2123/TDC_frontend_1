@@ -14,7 +14,7 @@ export default function UsersList() {
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/admin/users', {
+            const response = await fetch('https://tdc-backend-1.vercel.app/api/admin/users', {
                 headers: {
                     'Authorization': `Bearer ${adminToken}`,
                     'Content-Type': 'application/json'
@@ -44,7 +44,7 @@ export default function UsersList() {
         if (!window.confirm('Are you sure you want to delete this user?')) return;
 
         try {
-            const response = await fetch(`http://localhost:3000/api/admin/users/${userId}`, {
+            const response = await fetch(`https://tdc-backend-1.vercel.app/api/admin/users/${userId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${adminToken}`,
@@ -66,7 +66,7 @@ export default function UsersList() {
 
     const handleResetPassword = async (userId) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/admin/users/${userId}/reset-password`, {
+            const response = await fetch(`https://tdc-backend-1.vercel.app/api/admin/users/${userId}/reset-password`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${adminToken}`,
@@ -88,7 +88,7 @@ export default function UsersList() {
     const handleUpdateUser = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`http://localhost:3000/api/admin/users/${editingUser._id}`, {
+            const response = await fetch(`https://tdc-backend-1.vercel.app/api/admin/users/${editingUser._id}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${adminToken}`,
